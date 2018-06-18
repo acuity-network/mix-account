@@ -20,14 +20,14 @@ contract Account {
 
     /**
      * @dev A send has been made.
-     * @param receiver Account that received the funds.
+     * @param receiver Address that received the funds.
      * @param value Amount sent.
      */
     event Send(address indexed receiver, uint value);
 
     /**
      * @dev A receive has been made.
-     * @param sender Account that send the receive.
+     * @param sender Address that sent the funds.
      * @param value Amount received.
      */
     event Receive(address indexed sender, uint value);
