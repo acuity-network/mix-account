@@ -48,7 +48,7 @@ contract AccountTest is DSTest {
     }
 
 
-    function testStaticCall() public {
+    function testStaticCall() public view {
         account.staticCall(0x1234, '');
     }
 
