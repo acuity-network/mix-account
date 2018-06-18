@@ -8,15 +8,15 @@ pragma solidity ^0.4.24;
 contract Account {
 
     /**
-     * @dev Owner of the account.
+     * @dev Controller of the account.
      */
-    address owner;
+    address controller;
 
     /**
-     * @dev Set the owner of the account.
-     * @param owner The owner of the account.
+     * @dev Set the controller of the account.
+     * @param controller The address that controls this account.
      */
-    event SetOwner(address indexed owner);
+    event SetController(address indexed controller);
 
     /**
      * @dev A send has been made.
@@ -33,10 +33,10 @@ contract Account {
     event Receive(address indexed sender, uint value);
 
     /**
-     * @dev Revert if the owner of the item is not the message sender.
+     * @dev Revert if the controller of the item is not the sender.
      */
-    modifier isOwner() {
-        require (owner == msg.sender);
+    modifier isController() {
+        require (controller == msg.sender);
         _;
     }
 
@@ -49,30 +49,30 @@ contract Account {
     }
 
     /**
-     * @param _owner Account controlling this account.
+     * @param _controller Address that will control this account.
      */
-    constructor(address _owner) public {
-        // Store the owner.
-        owner = _owner;
+    constructor(address _controller) public {
+        // Store the controller.
+        controller = _controller;
         // Log the event.
-        emit SetOwner(_owner);
+        emit SetController(_controller);
     }
 
     /**
-     * @dev Change which address owns this account.
-     * @param newOwner New owner of the account.
+     * @dev Set which address controls this account.
+     * @param newController New controller of the account.
      */
-    function changeOwner(address newOwner) external isOwner {
-        owner = newOwner;
+    function setController(address newController) external isController {
+        controller = newController;
         // Log the event.
-        emit SetOwner(newOwner);
+        emit SetController(newController);
     }
 
     /**
      * @dev Forward MIX to an address.
      * @param receiver Address to receive the MIX.
      */
-    function sendMix(address receiver) external payable isOwner hasValue {
+    function sendMix(address receiver) external payable isController hasValue {
         // Send the value to the receiver.
         uint value = msg.value;
         // Log the event.
@@ -94,7 +94,7 @@ contract Account {
      * @param data The calldata.
      * @param returnLength Maximum length of the return data.
      */
-    function callH(address receiver, bytes data, uint returnLength) external payable isOwner {
+    function callH(address receiver, bytes data, uint returnLength) external payable isController {
         uint value = msg.value;
         // Log if MIX has been sent.
         if (value > 0) {
@@ -116,7 +116,7 @@ contract Account {
      * @param receiver Address to receive the call.
      * @param data The calldata.
      */
-    function callB(address receiver, bytes data) external payable isOwner {
+    function callB(address receiver, bytes data) external payable isController {
         uint value = msg.value;
         // Log if MIX has been sent.
         if (value > 0) {
@@ -139,7 +139,7 @@ contract Account {
      * @param receiver Address to receive the call.
      * @param data The calldata.
      */
-    function staticCall(address receiver, bytes data) external view isOwner {
+    function staticCall(address receiver, bytes data) external view isController {
         bytes memory _data = data;
         assembly {
             let success := staticcall(not(0), receiver, add(_data, 0x20), mload(_data), 0, 0)
@@ -161,14 +161,14 @@ contract Account {
     }
 
     /**
-     * @dev Send all MIX to the owner.
+     * @dev Send all MIX to the controller.
      */
-    function withdraw() external isOwner {
-        // Transfer the balance to the owner.
-        address _owner = owner;
+    function withdraw() external isController {
+        // Transfer the balance to the controller.
+        address _controller = controller;
         uint _value = address(this).balance;
         assembly {
-            let success := call(not(0), _owner, _value, 0, 0, 0, 0)
+            let success := call(not(0), _controller, _value, 0, 0, 0, 0)
             if iszero(success) {
                 let returnedData := mload(0x40)
                 // This will be an invalid instruction on Homestead and cause the call to revert.
@@ -179,10 +179,10 @@ contract Account {
     }
 
     /**
-     * @dev Destroy the contract and return any funds to the owner.
+     * @dev Destroy the contract and return any funds to the controller.
      */
-    function destroy() external isOwner {
-        selfdestruct(owner);
+    function destroy() external isController {
+        selfdestruct(controller);
     }
 
 }
