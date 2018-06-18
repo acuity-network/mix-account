@@ -166,9 +166,9 @@ contract Account {
     function withdraw() external isController {
         // Transfer the balance to the controller.
         address _controller = controller;
-        uint _value = address(this).balance;
+        uint value = address(this).balance;
         assembly {
-            let success := call(not(0), _controller, _value, 0, 0, 0, 0)
+            let success := call(not(0), _controller, value, 0, 0, 0, 0)
             if iszero(success) {
                 let returnedData := mload(0x40)
                 // This will be an invalid instruction on Homestead and cause the call to revert.
