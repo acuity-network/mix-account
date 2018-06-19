@@ -14,7 +14,7 @@ contract Account {
     address controller;
 
     /**
-     * @dev Set the controller of the account.
+     * @dev The controller has been set.
      * @param controller The address that controls this account.
      */
     event SetController(address indexed controller);
