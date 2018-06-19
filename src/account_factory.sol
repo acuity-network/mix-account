@@ -11,6 +11,6 @@ import "./account.sol";
 contract AccountFactory {
 
     function deploy(address controller) external returns (Account) {
-      return new Account(controller);
+        return new Account(controller);
     }
 }
