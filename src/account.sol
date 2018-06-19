@@ -19,16 +19,16 @@ contract Account {
     event SetController(address indexed controller);
 
     /**
-     * @dev A send has been made.
-     * @param receiver Address that received the funds.
-     * @param value Amount sent.
+     * @dev MIX has been sent.
+     * @param receiver Address that received the MIX.
+     * @param value Amount of MIX sent.
      */
     event Send(address indexed receiver, uint value);
 
     /**
-     * @dev A receive has been made.
-     * @param sender Address that sent the funds.
-     * @param value Amount received.
+     * @dev MIX has been received.
+     * @param sender Address that sent the MIX.
+     * @param value Amount of MIX sent.
      */
     event Receive(address indexed sender, uint value);
 
