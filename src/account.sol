@@ -1,5 +1,6 @@
 pragma solidity ^0.4.24;
 
+
 /**
  * @title Account
  * @author Jonathan Brown <jbrown@mix-blockchain.org>

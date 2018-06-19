@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "ds-test/test.sol";
 
+import "./account_factory.sol";
 import "./account.sol";
 
 
@@ -12,12 +13,13 @@ import "./account.sol";
  */
 contract AccountTest is DSTest {
 
+    AccountFactory accountFactory;
     Account account;
 
     function setUp() public {
-        account = new Account(this);
+        accountFactory = new AccountFactory();
+        account = accountFactory.deploy(this);
     }
-
 
     function testControlSendMixNoValue() public {
         account.sendMix.value(50)(0x1234);
