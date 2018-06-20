@@ -50,13 +50,13 @@ contract Account {
     }
 
     /**
-     * @param _controller Address that will control this account.
+     * @dev Constructor.
      */
-    constructor(address _controller) public {
+    constructor() public {
         // Store the controller.
-        controller = _controller;
+        controller = msg.sender;
         // Log the event.
-        emit SetController(_controller);
+        emit SetController(controller);
     }
 
     /**
