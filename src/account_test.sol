@@ -18,7 +18,7 @@ contract AccountTest is DSTest {
 
     function setUp() public {
         accountFactory = new AccountFactory();
-        account = accountFactory.deploy(this);
+        account = accountFactory.deploy();
     }
 
     function testControlSendMixNoValue() public {

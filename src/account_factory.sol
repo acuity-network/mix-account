@@ -10,7 +10,7 @@ import "./account.sol";
  */
 contract AccountFactory {
 
-    function deploy(address controller) external returns (Account) {
-        return new Account(controller);
+    function deploy() external returns (Account) {
+        return new Account(msg.sender);
     }
 }
