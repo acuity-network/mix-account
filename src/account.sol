@@ -21,17 +21,17 @@ contract Account {
 
     /**
      * @dev MIX has been sent.
-     * @param receiver Address that received the MIX.
+     * @param to Address that received the MIX.
      * @param value Amount of MIX sent.
      */
-    event Send(address indexed receiver, uint value);
+    event Send(address indexed to, uint value);
 
     /**
      * @dev MIX has been received.
-     * @param sender Address that sent the MIX.
+     * @param from Address that sent the MIX.
      * @param value Amount of MIX sent.
      */
-    event Receive(address indexed sender, uint value);
+    event Receive(address indexed from, uint value);
 
     /**
      * @dev Revert if the controller of the item is not the sender.
@@ -70,16 +70,16 @@ contract Account {
     }
 
     /**
-     * @dev Forward MIX to an address.
-     * @param receiver Address to receive the MIX.
+     * @dev Send MIX to an address.
+     * @param to Address to receive the MIX.
      */
-    function sendMix(address receiver) external payable isController hasValue {
-        // Send the value to the receiver.
+    function sendMix(address to) external payable isController hasValue {
+        // Send the value to the to.
         uint value = msg.value;
         // Log the event.
-        emit Send(receiver, value);
+        emit Send(to, value);
         assembly {
-            let success := call(not(0), receiver, value, 0, 0, 0, 0)
+            let success := call(not(0), to, value, 0, 0, 0, 0)
             if iszero(success) {
                 let returnedData := mload(0x40)
                 // This will be an invalid instruction on Homestead and cause the call to revert.
@@ -91,20 +91,20 @@ contract Account {
 
     /**
      * @dev Perform a call on Homestead.
-     * @param receiver Address to receive the call.
+     * @param to Address to receive the call.
      * @param data The calldata.
      * @param returnLength Maximum length of the return data.
      */
-    function callH(address receiver, bytes data, uint returnLength) external payable isController {
+    function callH(address to, bytes data, uint returnLength) external payable isController {
         uint value = msg.value;
         // Log if MIX has been sent.
         if (value > 0) {
-          emit Send(receiver, value);
+          emit Send(to, value);
         }
         bytes memory _data = data;
         assembly {
             let returnedData := mload(0x40)
-            let success := call(not(0), receiver, value, add(_data, 0x20), mload(_data), returnedData, returnLength)
+            let success := call(not(0), to, value, add(_data, 0x20), mload(_data), returnedData, returnLength)
             if iszero(success) {
                 invalid()
             }
@@ -114,18 +114,18 @@ contract Account {
 
     /**
      * @dev Perform a call on Byzantium.
-     * @param receiver Address to receive the call.
+     * @param to Address to receive the call.
      * @param data The calldata.
      */
-    function callB(address receiver, bytes data) external payable isController {
+    function callB(address to, bytes data) external payable isController {
         uint value = msg.value;
         // Log if MIX has been sent.
         if (value > 0) {
-          emit Send(receiver, value);
+          emit Send(to, value);
         }
         bytes memory _data = data;
         assembly {
-            let success := call(not(0), receiver, value, add(_data, 0x20), mload(_data), 0, 0)
+            let success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
             let returnedData := mload(0x40)
             returndatacopy(returnedData, 0, returndatasize)
             if iszero(success) {
@@ -137,13 +137,13 @@ contract Account {
 
     /**
      * @dev Perform a staticcall.
-     * @param receiver Address to receive the call.
+     * @param to Address to receive the call.
      * @param data The calldata.
      */
-    function staticCall(address receiver, bytes data) external view isController {
+    function staticCall(address to, bytes data) external view isController {
         bytes memory _data = data;
         assembly {
-            let success := staticcall(not(0), receiver, add(_data, 0x20), mload(_data), 0, 0)
+            let success := staticcall(not(0), to, add(_data, 0x20), mload(_data), 0, 0)
             let returnedData := mload(0x40)
             returndatacopy(returnedData, 0, returndatasize)
             if iszero(success) {
