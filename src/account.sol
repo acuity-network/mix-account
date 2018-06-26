@@ -95,7 +95,7 @@ contract Account {
      * @param data The calldata.
      * @param returnLength Maximum length of the return data.
      */
-    function callH(address to, bytes data, uint returnLength) external payable isController {
+    function callH(address to, bytes data, uint returnLength) external payable isController returns (bytes32) {
         uint value = msg.value;
         // Log if MIX has been sent.
         if (value > 0) {
@@ -117,7 +117,7 @@ contract Account {
      * @param to Address to receive the call.
      * @param data The calldata.
      */
-    function callB(address to, bytes data) external payable isController {
+    function callB(address to, bytes data) external payable isController returns (bytes32) {
         uint value = msg.value;
         // Log if MIX has been sent.
         if (value > 0) {
@@ -140,7 +140,7 @@ contract Account {
      * @param to Address to receive the call.
      * @param data The calldata.
      */
-    function staticCall(address to, bytes data) external view isController {
+    function staticCall(address to, bytes data) external view isController returns (bytes32) {
         bytes memory _data = data;
         assembly {
             let success := staticcall(not(0), to, add(_data, 0x20), mload(_data), 0, 0)
