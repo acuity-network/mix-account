@@ -1,6 +1,3 @@
 [submodule "lib/ds-test"]
 	path = lib/ds-test
 	url = https://github.com/dapphub/ds-test
-[submodule "mix-item-store"]
-	path = mix-item-store
-	url = https://github.com/mix-blockchain/mix-item-store
