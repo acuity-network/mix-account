@@ -34,10 +34,18 @@ contract Account {
     event Receive(address indexed from, uint value);
 
     /**
-     * @dev Revert if the controller of the item is not the sender.
+     * @dev Revert if the controller of the account is not the sender.
      */
     modifier isController() {
         require (controller == msg.sender);
+        _;
+    }
+
+    /**
+     * @dev Revert if the controller of the account is the sender.
+     */
+    modifier isNotController() {
+        require (controller != msg.sender);
         _;
     }
 
@@ -73,90 +81,45 @@ contract Account {
      * @dev Send MIX to an address.
      * @param to Address to receive the MIX.
      */
-    function sendMix(address to) external payable isController hasValue {
+    function sendMix(address to) external payable hasValue isController {
         // Send the value to the to.
         uint value = msg.value;
         // Log the event.
         emit Send(to, value);
+        // Send the MIX.
         assembly {
             let success := call(not(0), to, value, 0, 0, 0, 0)
             if iszero(success) {
-                let returnedData := mload(0x40)
-                // This will be an invalid instruction on Homestead and cause the call to revert.
-                returndatacopy(returnedData, 0, returndatasize)
-                revert(returnedData, returndatasize)
+                revert(0, 0)
             }
         }
     }
 
     /**
-     * @dev Perform a call on Homestead.
+     * @dev Perform a call.
      * @param to Address to receive the call.
      * @param data The calldata.
-     * @param returnLength Maximum length of the return data.
      */
-    function callH(address to, bytes data, uint returnLength) external payable isController returns (bytes32) {
+    function sendData(address to, bytes data) external payable isController {
         uint value = msg.value;
         // Log if MIX has been sent.
         if (value > 0) {
           emit Send(to, value);
         }
-        bytes memory _data = data;
-        assembly {
-            let returnedData := mload(0x40)
-            let success := call(not(0), to, value, add(_data, 0x20), mload(_data), returnedData, returnLength)
-            if iszero(success) {
-                invalid()
-            }
-            return(returnedData, returnLength)
-        }
-    }
-
-    /**
-     * @dev Perform a call on Byzantium.
-     * @param to Address to receive the call.
-     * @param data The calldata.
-     */
-    function callB(address to, bytes data) external payable isController returns (bytes32) {
-        uint value = msg.value;
-        // Log if MIX has been sent.
-        if (value > 0) {
-          emit Send(to, value);
-        }
+        // Send the call.
         bytes memory _data = data;
         assembly {
             let success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
-            let returnedData := mload(0x40)
-            returndatacopy(returnedData, 0, returndatasize)
             if iszero(success) {
-                revert(returnedData, returndatasize)
+                revert(0, 0)
             }
-            return(returnedData, returndatasize)
-        }
-    }
-
-    /**
-     * @dev Perform a staticcall.
-     * @param to Address to receive the call.
-     * @param data The calldata.
-     */
-    function staticCall(address to, bytes data) external view isController returns (bytes32) {
-        bytes memory _data = data;
-        assembly {
-            let success := staticcall(not(0), to, add(_data, 0x20), mload(_data), 0, 0)
-            let returnedData := mload(0x40)
-            returndatacopy(returnedData, 0, returndatasize)
-            if iszero(success) {
-                revert(returnedData, returndatasize)
-            }
-            return(returnedData, returndatasize)
         }
     }
 
     /**
      * @dev Fallback function.
      */
-    function() external payable hasValue {
+    function() external payable hasValue isNotController {
         // Log the event.
         emit Receive(msg.sender, msg.value);
     }
@@ -171,10 +134,7 @@ contract Account {
         assembly {
             let success := call(not(0), _controller, value, 0, 0, 0, 0)
             if iszero(success) {
-                let returnedData := mload(0x40)
-                // This will be an invalid instruction on Homestead and cause the call to revert.
-                returndatacopy(returnedData, 0, returndatasize)
-                revert(returnedData, returndatasize)
+                revert(0, 0)
             }
         }
     }
