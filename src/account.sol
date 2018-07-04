@@ -20,13 +20,6 @@ contract Account {
     event SetController(address indexed controller);
 
     /**
-     * @dev MIX has been sent.
-     * @param to Address that received the MIX.
-     * @param value Amount of MIX sent.
-     */
-    event Send(address indexed to, uint value);
-
-    /**
      * @dev MIX has been received.
      * @param from Address that sent the MIX.
      * @param value Amount of MIX sent.
@@ -38,14 +31,6 @@ contract Account {
      */
     modifier isController() {
         require (controller == msg.sender);
-        _;
-    }
-
-    /**
-     * @dev Revert if the controller of the account is the sender.
-     */
-    modifier isNotController() {
-        require (controller != msg.sender);
         _;
     }
 
@@ -82,10 +67,7 @@ contract Account {
      * @param to Address to receive the MIX.
      */
     function sendMix(address to) external payable hasValue isController {
-        // Send the value to the to.
         uint value = msg.value;
-        // Log the event.
-        emit Send(to, value);
         // Send the MIX.
         assembly {
             let success := call(not(0), to, value, 0, 0, 0, 0)
@@ -102,10 +84,6 @@ contract Account {
      */
     function sendData(address to, bytes data) external payable isController {
         uint value = msg.value;
-        // Log if MIX has been sent.
-        if (value > 0) {
-          emit Send(to, value);
-        }
         // Send the call.
         bytes memory _data = data;
         assembly {
@@ -119,9 +97,11 @@ contract Account {
     /**
      * @dev Fallback function.
      */
-    function() external payable hasValue isNotController {
+    function() external payable hasValue {
         // Log the event.
-        emit Receive(msg.sender, msg.value);
+        if (msg.sender != controller) {
+          emit Receive(msg.sender, msg.value);
+        }
     }
 
     /**
