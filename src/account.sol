@@ -17,14 +17,14 @@ contract Account {
      * @dev The controller has been set.
      * @param controller The address that controls this account.
      */
-    event SetController(address indexed controller);
+    event SetController(address controller);
 
     /**
      * @dev MIX has been received.
      * @param from Address that sent the MIX.
-     * @param value Amount of MIX sent.
+     * @param value Amount of MIX received.
      */
-    event Receive(address indexed from, uint value);
+    event Receive(address from, uint value);
 
     /**
      * @dev Revert if the controller of the account is not the sender.
