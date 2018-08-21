@@ -57,6 +57,7 @@ contract Account {
      * @param newController New controller of the account.
      */
     function setController(address newController) external isController {
+        // Store the controller.
         controller = newController;
         // Log the event.
         emit SetController(newController);
