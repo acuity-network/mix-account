@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 import "ds-test/test.sol";
 
@@ -19,16 +19,16 @@ contract AccountTest is DSTest {
     }
 
     function testControlSendMixNoValue() public {
-        account.sendMix.value(50)(0x1234);
+        account.sendMix.value(50)(address(0x1234));
     }
 
     function testFailSendMixNoValue() public {
-        account.sendMix.value(0)(0x1234);
+        account.sendMix.value(0)(address(0x1234));
     }
 
     function testSendMix() public {
         assertEq(address(0x1234).balance, 0);
-        account.sendMix.value(50)(0x1234);
+        account.sendMix.value(50)(address(0x1234));
         assertEq(address(0x1234).balance, 50);
     }
 

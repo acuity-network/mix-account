@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 
 /**
@@ -11,7 +11,7 @@ contract Account {
     /**
      * @dev Controller of the account.
      */
-    address controller;
+    address payable controller;
 
     /**
      * @dev The controller has been set.
@@ -56,7 +56,7 @@ contract Account {
      * @dev Set which address controls this account.
      * @param newController New controller of the account.
      */
-    function setController(address newController) external isController {
+    function setController(address payable newController) external isController {
         // Store the controller.
         controller = newController;
         // Log the event.
@@ -83,7 +83,7 @@ contract Account {
      * @param to Address to receive the call.
      * @param data The calldata.
      */
-    function sendData(address to, bytes data) external payable isController {
+    function sendData(address to, bytes calldata data) external payable isController {
         uint value = msg.value;
         // Send the call.
         bytes memory _data = data;
