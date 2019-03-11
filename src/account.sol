@@ -1,12 +1,14 @@
 pragma solidity ^0.5.4;
 
+import "erc223/ERC223.sol";
+
 
 /**
  * @title Account
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Contract for each MIX account.
  */
-contract Account {
+contract Account is ERC223Receiver {
 
     /**
      * @dev Controller of the account.
@@ -25,6 +27,14 @@ contract Account {
      * @param value Amount of MIX received.
      */
     event Receive(address from, uint value);
+
+    /**
+     * @dev A token has been received.
+     * @param tokenContract The ERC223 contract that manages the token.
+     * @param from Address that sent the token.
+     * @param value Amount of the token received.
+     */
+    event ReceiveToken(address tokenContract, address from, uint value);
 
     /**
      * @dev Revert if the controller of the account is not the sender.
@@ -103,6 +113,14 @@ contract Account {
         if (msg.sender != controller) {
           emit Receive(msg.sender, msg.value);
         }
+    }
+
+    /**
+     * @dev ERC223 fallback function.
+     */
+    function tokenFallback(address from, uint value, bytes calldata) external {
+        // Log the event.
+        emit ReceiveToken(msg.sender, from, value);
     }
 
     /**
