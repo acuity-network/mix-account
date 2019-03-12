@@ -30,11 +30,11 @@ contract Account is ERC223Receiver {
 
     /**
      * @dev A token has been received.
-     * @param tokenContract The ERC223 contract that manages the token.
      * @param from Address that sent the token.
      * @param value Amount of the token received.
+     * @param tokenContract The ERC223 contract that manages the token.
      */
-    event ReceiveToken(address tokenContract, address from, uint value);
+    event ReceiveToken(address from, uint value, address tokenContract);
 
     /**
      * @dev Revert if the controller of the account is not the sender.
@@ -121,7 +121,7 @@ contract Account is ERC223Receiver {
     function tokenFallback(address from, uint value, bytes calldata) external {
         // Log the event.
         if (from != controller) {
-            emit ReceiveToken(msg.sender, from, value);
+            emit ReceiveToken(from, value, msg.sender);
         }
     }
 
