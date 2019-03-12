@@ -120,7 +120,9 @@ contract Account is ERC223Receiver {
      */
     function tokenFallback(address from, uint value, bytes calldata) external {
         // Log the event.
-        emit ReceiveToken(msg.sender, from, value);
+        if (from != controller) {
+            emit ReceiveToken(msg.sender, from, value);
+        }
     }
 
     /**
