@@ -2,7 +2,7 @@ pragma solidity ^0.5.4;
 
 import "ds-test/test.sol";
 
-import "./account.sol";
+import "./Account.sol";
 
 
 /**
