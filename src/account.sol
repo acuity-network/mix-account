@@ -1,6 +1,6 @@
 pragma solidity ^0.5.4;
 
-import "erc223/ERC223.sol";
+import "mix-token/MixToken.sol";
 
 
 /**
@@ -8,7 +8,7 @@ import "erc223/ERC223.sol";
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Contract for each MIX account.
  */
-contract Account is ERC223Receiver {
+contract Account is MixTokenReceiverInterface {
 
     /**
      * @dev Controller of the account.
@@ -116,14 +116,15 @@ contract Account is ERC223Receiver {
     }
 
     /**
-     * @dev ERC223 fallback function.
+     * @dev MixToken fallback function.
      */
-    function tokenFallback(address from, uint value, bytes calldata) external {
-        // Log the event.
-        if (from != controller) {
-            emit ReceiveToken(from, value, msg.sender);
-        }
-    }
+     function receiveMixToken(address from, uint value, bytes calldata) external returns (bytes4) {
+         // Log the event.
+         if (from != controller) {
+             emit ReceiveToken(from, value, msg.sender);
+         }
+         return 0xf2e0ed8f;
+     }
 
     /**
      * @dev Send all MIX to the controller.
