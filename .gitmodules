@@ -4,6 +4,3 @@
 [submodule "lib/mix-token"]
 	path = lib/mix-token
 	url = https://github.com/mix-blockchain/mix-token
-[submodule "lib/erc-1155"]
-	path = lib/erc-1155
-	url = https://github.com/enjin/erc-1155
