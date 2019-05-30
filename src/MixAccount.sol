@@ -5,11 +5,11 @@ import "./IERC1155TokenReceiver.sol";
 
 
 /**
- * @title Account
+ * @title MixAccount
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Contract for each MIX account.
  */
-contract Account is MixTokenReceiverInterface, IERC1155TokenReceiver {
+contract MixAccount is MixTokenReceiverInterface, IERC1155TokenReceiver {
 
     /**
      * @dev Controller of the account.

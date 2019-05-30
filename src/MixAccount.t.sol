@@ -2,20 +2,20 @@ pragma solidity ^0.5.7;
 
 import "ds-test/test.sol";
 
-import "./Account.sol";
+import "./MixAccount.sol";
 
 
 /**
- * @title AccountTest
+ * @title MixAccountTest
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
- * @dev Testing contract for Account.
+ * @dev Testing contract for MixAccount.
  */
-contract AccountTest is DSTest {
+contract MixAccountTest is DSTest {
 
-    Account account;
+    MixAccount account;
 
     function setUp() public {
-        account = new Account();
+        account = new MixAccount();
     }
 
     function testControlSendMixNoValue() public {
