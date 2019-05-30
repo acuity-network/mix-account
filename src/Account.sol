@@ -43,7 +43,7 @@ contract Account is MixTokenReceiverInterface, IERC1155TokenReceiver {
      * @dev Revert if the controller of the account is not the sender.
      */
     modifier isController() {
-        require (controller == msg.sender);
+        require (controller == msg.sender, "Not controller.");
         _;
     }
 
@@ -51,7 +51,7 @@ contract Account is MixTokenReceiverInterface, IERC1155TokenReceiver {
      * @dev Revert if no value is sent.
      */
     modifier hasValue() {
-        require (msg.value > 0);
+        require (msg.value > 0, "No value.");
         _;
     }
 
