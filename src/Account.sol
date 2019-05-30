@@ -1,4 +1,4 @@
-pragma solidity ^0.5.4;
+pragma solidity ^0.5.7;
 
 import "mix-token/MixToken.sol";
 import "./IERC1155TokenReceiver.sol";
