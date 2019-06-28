@@ -1,4 +1,4 @@
-pragma solidity ^0.5.7;
+pragma solidity ^0.5.9;
 
 import "mix-token/MixToken.sol";
 import "./ERC165Interface.sol";
@@ -136,7 +136,7 @@ contract MixAccount is MixTokenReceiverInterface, ERC165Interface, ERC1155TokenR
             emit ReceiveToken(from, value, msg.sender);
         }
         return 0xf2e0ed8f;
-     }
+    }
 
     /**
      * @dev An ERC1155-compliant smart contract MUST call this function on the token recipient contract, at the end of a `safeTransferFrom` after the balance has been updated.
