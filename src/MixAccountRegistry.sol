@@ -15,11 +15,22 @@ contract MixAccountRegistry {
      */
     mapping (address => MixAccount) controllerAccount;
 
+    /**
+     * @dev Revert if the controller does not have an account.
+     */
+    modifier accountExists(address controller) {
+        require (controllerAccount[controller] != MixAccount(0));
+        _;
+    }
+
     function set(MixAccount account) external {
         controllerAccount[msg.sender] = account;
     }
 
-    function get(address controller) external view returns (MixAccount) {
+    function get(address controller) external view
+        accountExists(controller)
+        returns (MixAccount)
+    {
         return controllerAccount[controller];
     }
 
