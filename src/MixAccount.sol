@@ -1,8 +1,8 @@
 pragma solidity ^0.5.9;
 
 import "mix-token/MixToken.sol";
-import "./ERC165Interface.sol";
-import "./ERC1155TokenReceiverInterface.sol";
+import "./ERC165.sol";
+import "./ERC1155TokenReceiver.sol";
 
 
 /**
@@ -10,7 +10,7 @@ import "./ERC1155TokenReceiverInterface.sol";
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Contract for each MIX account.
  */
-contract MixAccount is MixTokenReceiverInterface, ERC165Interface, ERC1155TokenReceiverInterface {
+contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
 
     /**
      * @dev Controller of the account.
@@ -38,6 +38,13 @@ contract MixAccount is MixTokenReceiverInterface, ERC165Interface, ERC1155TokenR
      */
     event ReceiveToken(address from, uint value, address tokenContract);
 
+    /**
+     * @dev An ERC1155 token has been received.
+     * @param operator The address which initiated the transfer.
+     * @param from The address which previously owned the token.
+     * @param id The ID of the token being transferred.
+     * @param value Amount of the token received.
+     */
     event ReceiveERC1155Token(address operator, address from, uint256 id, uint256 value);
 
     /**
@@ -140,10 +147,10 @@ contract MixAccount is MixTokenReceiverInterface, ERC165Interface, ERC1155TokenR
 
     /**
      * @dev An ERC1155-compliant smart contract MUST call this function on the token recipient contract, at the end of a `safeTransferFrom` after the balance has been updated.
-     * @param operator The address which initiated the transfer (i.e. msg.sender)
-     * @param from The address which previously owned the token
-     * @param id The ID of the token being transferred
-     * @param value The amount of tokens being transferred
+     * @param operator The address which initiated the transfer (i.e. msg.sender).
+     * @param from The address which previously owned the token.
+     * @param id The ID of the token being transferred.
+     * @param value The amount of tokens being transferred.
      * @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
      */
     function onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes calldata) external returns (bytes4) {
@@ -156,10 +163,10 @@ contract MixAccount is MixTokenReceiverInterface, ERC165Interface, ERC1155TokenR
 
     /**
      * @dev An ERC1155-compliant smart contract MUST call this function on the token recipient contract, at the end of a `safeBatchTransferFrom` after the balances have been updated.
-     * @param operator The address which initiated the batch transfer (i.e. msg.sender)
-     * @param from The address which previously owned the token
-     * @param ids An array containing ids of each token being transferred (order and length must match values array)
-     * @param values An array containing amounts of each token being transferred (order and length must match ids array)
+     * @param operator The address which initiated the batch transfer (i.e. msg.sender).
+     * @param from The address which previously owned the token.
+     * @param ids An array containing ids of each token being transferred (order and length must match values array).
+     * @param values An array containing amounts of each token being transferred (order and length must match ids array).
      * @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
      */
     function onERC1155BatchReceived(address operator, address from, uint256[] calldata ids, uint256[] calldata values, bytes calldata) external returns (bytes4) {
@@ -174,21 +181,13 @@ contract MixAccount is MixTokenReceiverInterface, ERC165Interface, ERC1155TokenR
     }
 
     /**
-     * @dev This function MUST return `bytes4(keccak256("isERC1155TokenReceiver()"))` (i.e. 0x0d912442).
-     * @return `bytes4(keccak256("isERC1155TokenReceiver()"))`
-     */
-    function isERC1155TokenReceiver() external view returns (bytes4) {
-        return bytes4(keccak256("isERC1155TokenReceiver()"));
-    }
-
-    /**
      * @dev Interface identification is specified in ERC-165.
-     * @param interfaceID The interface identifier, as specified in ERC-165
-     * @return true if the contract implements interfaceID
+     * @param interfaceID The interface identifier, as specified in ERC-165.
+     * @return true if the contract implements interfaceID.
      */
     function supportsInterface(bytes4 interfaceID) external view returns (bool) {
         if (interfaceID == 0x01ffc9a7 ||
-            interfaceID == 0x43b236a2)
+            interfaceID == 0x4e2312e0)
         {
             return true;
         }
