@@ -6,7 +6,7 @@ pragma solidity ^0.5.9;
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Interface for implementing a MIX account contract.
  */
-interface MixAccountInterface /* is ERC165, MixTokenReceiverInterface, ERC1155TokenReceiver */ {
+interface MixAccountInterface /* is MixTokenReceiverInterface, ERC1155TokenReceiver */ {
 
     /**
      * @dev Set which address controls this account.
@@ -28,11 +28,6 @@ interface MixAccountInterface /* is ERC165, MixTokenReceiverInterface, ERC1155To
     function sendData(address to, bytes calldata data) external payable;
 
     /**
-     * @dev Fallback function.
-     */
-    function() external payable;
-
-    /**
      * @dev Send all MIX to the controller.
      */
     function withdraw() external;
@@ -41,5 +36,10 @@ interface MixAccountInterface /* is ERC165, MixTokenReceiverInterface, ERC1155To
      * @dev Destroy the contract and return any funds to the controller.
      */
     function destroy() external;
+
+    /**
+     * @dev Fallback function.
+     */
+    function() external payable;
 
 }
