@@ -153,9 +153,7 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param value The amount of tokens being transferred.
      * @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
      */
-    function onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes calldata)
-        external returns (bytes4)
-    {
+    function onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes calldata) external returns (bytes4) {
         if (from != controller) {
             // Log the event.
             emit ReceiveERC1155Token(operator, from, id, value);
@@ -171,9 +169,7 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array).
      * @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
      */
-    function onERC1155BatchReceived(address operator, address from, uint256[] calldata ids, uint256[] calldata values, bytes calldata)
-        external returns (bytes4)
-    {
+    function onERC1155BatchReceived(address operator, address from, uint256[] calldata ids, uint256[] calldata values, bytes calldata) external returns (bytes4) {
         if (from != controller) {
             uint count = ids.length;
             for (uint i = 0; i < count; i++) {
