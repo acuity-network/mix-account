@@ -127,6 +127,28 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
     }
 
     /**
+     * @dev Send all MIX to the controller.
+     */
+    function withdraw() external isController {
+        // Transfer the balance to the controller.
+        address _controller = controller;
+        uint value = address(this).balance;
+        assembly {
+            let success := call(not(0), _controller, value, 0, 0, 0, 0)
+            if iszero(success) {
+                revert(0, 0)
+            }
+        }
+    }
+
+    /**
+     * @dev Destroy the contract and return any funds to the controller.
+     */
+    function destroy() external isController {
+        selfdestruct(controller);
+    }
+
+    /**
      * @dev Fallback function.
      */
     function() external payable hasValue {
@@ -198,28 +220,6 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
             return true;
         }
         return false;
-    }
-
-    /**
-     * @dev Send all MIX to the controller.
-     */
-    function withdraw() external isController {
-        // Transfer the balance to the controller.
-        address _controller = controller;
-        uint value = address(this).balance;
-        assembly {
-            let success := call(not(0), _controller, value, 0, 0, 0, 0)
-            if iszero(success) {
-                revert(0, 0)
-            }
-        }
-    }
-
-    /**
-     * @dev Destroy the contract and return any funds to the controller.
-     */
-    function destroy() external isController {
-        selfdestruct(controller);
     }
 
 }
