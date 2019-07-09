@@ -152,7 +152,10 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
     }
 
     /**
-     * @dev MixToken fallback function.
+     * @dev A quantity of a Mix Token has been sent to this account.
+     * @param from The address which previously owned the token.
+     * @param value The amount of tokens being transferred.
+     * return `bytes4(keccak256("onMixTokenReceived(address,uint256,bytes)"))`
      */
     function onMixTokenReceived(address from, uint value, bytes calldata) external returns (bytes4) {
         // Check call didn't come from the controller.
