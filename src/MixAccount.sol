@@ -1,4 +1,4 @@
-pragma solidity ^0.5.9;
+pragma solidity ^0.5.10;
 
 import "mix-token/MixToken.sol";
 import "./ERC165.sol";
