@@ -162,13 +162,13 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
     /**
      * @dev MixToken fallback function.
      */
-    function receiveMixToken(address from, uint value, bytes calldata) external returns (bytes4) {
+    function onMixTokenReceived(address from, uint value, bytes calldata) external returns (bytes4) {
         // Check call didn't come from the controller.
         if (from != controller) {
             // Log the event.
             emit ReceiveMixToken(from, msg.sender, value);
         }
-        return 0xf2e0ed8f;
+        return 0x3c8c71b0;
     }
 
     /**
@@ -185,7 +185,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
             // Log the event.
             emit ReceiveERC1155Token(from, msg.sender, id, value, operator);
         }
-        return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
+        return 0xf23a6e61;
     }
 
     /**
@@ -205,7 +205,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
                 emit ReceiveERC1155Token(from, msg.sender, ids[i], values[i], operator);
             }
         }
-        return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
+        return 0xbc197c81;
     }
 
     /**
