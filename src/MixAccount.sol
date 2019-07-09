@@ -53,7 +53,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
      * @dev Revert if the controller of the account is not the sender.
      */
     modifier isController() {
-        require (controller == msg.sender, "Not controller.");
+        require (controller == msg.sender);
         _;
     }
 
@@ -61,7 +61,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
      * @dev Revert if no value is sent.
      */
     modifier hasValue() {
-        require (msg.value > 0, "No value.");
+        require (msg.value > 0);
         _;
     }
 
