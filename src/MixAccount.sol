@@ -87,14 +87,6 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
     }
 
     /**
-     * @dev Get which address controls this account.
-     * @return Controller of the account.
-     */
-    function getController() external view returns (address) {
-        return controller;
-    }
-
-    /**
      * @dev Send MIX to an address.
      * @param to Address to receive the MIX.
      */

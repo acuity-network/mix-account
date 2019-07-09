@@ -15,12 +15,6 @@ interface MixAccountInterface /* is ERC165, MixTokenReceiverInterface, ERC1155To
     function setController(address payable newController) external;
 
     /**
-     * @dev Get which address controls this account.
-     * @return Controller of the account.
-     */
-    function getController() external view returns (address);
-
-    /**
      * @dev Send MIX to an address.
      * @param to Address to receive the MIX.
      */
