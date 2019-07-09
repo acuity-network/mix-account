@@ -97,8 +97,8 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param to Address to receive the MIX.
      */
     function sendMix(address to) external payable hasValue isController {
-        uint value = msg.value;
         // Send the MIX.
+        uint value = msg.value;
         assembly {
             let success := call(not(0), to, value, 0, 0, 0, 0)
             if iszero(success) {
@@ -113,8 +113,8 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param data The calldata.
      */
     function sendData(address to, bytes calldata data) external payable isController {
+        // Send the data.
         uint value = msg.value;
-        // Send the call.
         bytes memory _data = data;
         assembly {
             let success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
@@ -128,8 +128,9 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @dev Fallback function.
      */
     function() external payable hasValue {
-        // Log the event.
+        // Check call didn't come from the controller.
         if (msg.sender != controller) {
+            // Log the event.
           emit Receive(msg.sender, msg.value);
         }
     }
@@ -138,8 +139,9 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @dev MixToken fallback function.
      */
     function receiveMixToken(address from, uint value, bytes calldata) external returns (bytes4) {
-        // Log the event.
+        // Check call didn't come from the controller.
         if (from != controller) {
+            // Log the event.
             emit ReceiveToken(from, value, msg.sender);
         }
         return 0xf2e0ed8f;
@@ -154,8 +156,9 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
      */
     function onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes calldata) external returns (bytes4) {
-        // Log the event.
+        // Check call didn't come from the controller.
         if (from != controller) {
+            // Log the event.
             emit ReceiveERC1155Token(operator, from, id, value);
         }
         return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
@@ -170,10 +173,11 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
      */
     function onERC1155BatchReceived(address operator, address from, uint256[] calldata ids, uint256[] calldata values, bytes calldata) external returns (bytes4) {
-        // Log the event.
+        // Check call didn't come from the controller.
         if (from != controller) {
             uint count = ids.length;
             for (uint i = 0; i < count; i++) {
+                // Log the event.
                 emit ReceiveERC1155Token(operator, from, ids[i], values[i]);
             }
         }
