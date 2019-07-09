@@ -19,7 +19,7 @@ contract MixAccountRegistry {
      * @dev Revert if the controller does not have an account.
      */
     modifier accountExists(address controller) {
-        require (controllerAccount[controller] != MixAccount(0), "Account not found.");
+        require (controllerAccount[controller] != MixAccount(0));
         _;
     }
 

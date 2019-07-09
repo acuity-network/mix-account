@@ -97,14 +97,14 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param to Address to receive the MIX.
      */
     function sendMix(address to) external payable hasValue isController {
-        // Send the MIX.
         uint value = msg.value;
-        bool success;
+        // Send the MIX.
         assembly {
-            success := call(not(0), to, value, 0, 0, 0, 0)
+            let success := call(not(0), to, value, 0, 0, 0, 0)
+            if iszero(success) {
+                revert(0, 0)
+            }
         }
-        // Check the result.
-        require (success, "Failed to send MIX.");
     }
 
     /**
@@ -113,15 +113,15 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param data The calldata.
      */
     function sendData(address to, bytes calldata data) external payable isController {
-        // Send the data.
         uint value = msg.value;
+        // Send the call.
         bytes memory _data = data;
-        bool success;
         assembly {
-            success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
+            let success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
+            if iszero(success) {
+                revert(0, 0)
+            }
         }
-        // Check the result.
-        require (success, "Failed to send data.");
     }
 
     /**
@@ -138,8 +138,8 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @dev MixToken fallback function.
      */
     function receiveMixToken(address from, uint value, bytes calldata) external returns (bytes4) {
+        // Log the event.
         if (from != controller) {
-            // Log the event.
             emit ReceiveToken(from, value, msg.sender);
         }
         return 0xf2e0ed8f;
@@ -154,8 +154,8 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
      */
     function onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes calldata) external returns (bytes4) {
+        // Log the event.
         if (from != controller) {
-            // Log the event.
             emit ReceiveERC1155Token(operator, from, id, value);
         }
         return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
@@ -170,10 +170,10 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
      */
     function onERC1155BatchReceived(address operator, address from, uint256[] calldata ids, uint256[] calldata values, bytes calldata) external returns (bytes4) {
+        // Log the event.
         if (from != controller) {
             uint count = ids.length;
             for (uint i = 0; i < count; i++) {
-                // Log the event.
                 emit ReceiveERC1155Token(operator, from, ids[i], values[i]);
             }
         }
@@ -201,11 +201,12 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
         // Transfer the balance to the controller.
         address _controller = controller;
         uint value = address(this).balance;
-        bool success;
         assembly {
-            success := call(not(0), _controller, value, 0, 0, 0, 0)
+            let success := call(not(0), _controller, value, 0, 0, 0, 0)
+            if iszero(success) {
+                revert(0, 0)
+            }
         }
-        require (success, "Failed to withdraw MIX.");
     }
 
     /**
