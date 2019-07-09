@@ -132,7 +132,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
         // Check call didn't come from the controller.
         if (msg.sender != controller) {
             // Log the event.
-          emit Receive(msg.sender, msg.value);
+            emit Receive(msg.sender, msg.value);
         }
     }
 
