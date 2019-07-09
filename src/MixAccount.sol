@@ -2,6 +2,7 @@ pragma solidity ^0.5.9;
 
 import "mix-token/MixToken.sol";
 import "./ERC165.sol";
+import "./MixAccountInterface.sol";
 import "./ERC1155TokenReceiver.sol";
 
 
@@ -10,7 +11,7 @@ import "./ERC1155TokenReceiver.sol";
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Contract for each MIX account.
  */
-contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
+contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, ERC1155TokenReceiver {
 
     /**
      * @dev Controller of the account.
@@ -45,7 +46,7 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param id The ID of the token being transferred.
      * @param value Amount of the token received.
      */
-    event ReceiveERC1155Token(address operator, address from, uint256 id, uint256 value);
+    event ReceiveERC1155Token(address operator, address from, uint id, uint value);
 
     /**
      * @dev Revert if the controller of the account is not the sender.
@@ -155,7 +156,7 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param value The amount of tokens being transferred.
      * @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
      */
-    function onERC1155Received(address operator, address from, uint256 id, uint256 value, bytes calldata) external returns (bytes4) {
+    function onERC1155Received(address operator, address from, uint id, uint value, bytes calldata) external returns (bytes4) {
         // Check call didn't come from the controller.
         if (from != controller) {
             // Log the event.
@@ -172,7 +173,7 @@ contract MixAccount is MixTokenReceiverInterface, ERC165, ERC1155TokenReceiver {
      * @param values An array containing amounts of each token being transferred (order and length must match ids array).
      * @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
      */
-    function onERC1155BatchReceived(address operator, address from, uint256[] calldata ids, uint256[] calldata values, bytes calldata) external returns (bytes4) {
+    function onERC1155BatchReceived(address operator, address from, uint[] calldata ids, uint[] calldata values, bytes calldata) external returns (bytes4) {
         // Check call didn't come from the controller.
         if (from != controller) {
             uint count = ids.length;
