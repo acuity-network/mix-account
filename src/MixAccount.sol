@@ -29,24 +29,25 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
      * @param from Address that sent the MIX.
      * @param value Amount of MIX received.
      */
-    event Receive(address from, uint value);
+    event ReceiveMix(address indexed from, uint value);
 
     /**
      * @dev A token has been received.
      * @param from Address that sent the token.
-     * @param value Amount of the token received.
      * @param tokenContract The MixTokenInterface contract that manages the token.
+     * @param value Amount of the token received.
      */
-    event ReceiveToken(address from, uint value, address tokenContract);
+    event ReceiveMixToken(address indexed from, address indexed tokenContract, uint value);
 
     /**
      * @dev An ERC1155 token has been received.
-     * @param operator The address which initiated the transfer.
      * @param from The address which previously owned the token.
+     * @param tokenContract The ERC1155 contract that manages the token.
      * @param id The ID of the token being transferred.
      * @param value Amount of the token received.
+     * @param operator The address which initiated the transfer.
      */
-    event ReceiveERC1155Token(address operator, address from, uint id, uint value);
+    event ReceiveERC1155Token(address indexed from, address indexed tokenContract, uint indexed id, uint value, address operator);
 
     /**
      * @dev Revert if the controller of the account is not the sender.
@@ -132,7 +133,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
         // Check call didn't come from the controller.
         if (msg.sender != controller) {
             // Log the event.
-            emit Receive(msg.sender, msg.value);
+            emit ReceiveMix(msg.sender, msg.value);
         }
     }
 
@@ -143,7 +144,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
         // Check call didn't come from the controller.
         if (from != controller) {
             // Log the event.
-            emit ReceiveToken(from, value, msg.sender);
+            emit ReceiveMixToken(from, msg.sender, value);
         }
         return 0xf2e0ed8f;
     }
@@ -160,7 +161,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
         // Check call didn't come from the controller.
         if (from != controller) {
             // Log the event.
-            emit ReceiveERC1155Token(operator, from, id, value);
+            emit ReceiveERC1155Token(from, msg.sender, id, value, operator);
         }
         return bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"));
     }
@@ -179,7 +180,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
             uint count = ids.length;
             for (uint i = 0; i < count; i++) {
                 // Log the event.
-                emit ReceiveERC1155Token(operator, from, ids[i], values[i]);
+                emit ReceiveERC1155Token(from, msg.sender, ids[i], values[i], operator);
             }
         }
         return bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"));
