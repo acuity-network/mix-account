@@ -35,7 +35,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
      * @dev A token has been received.
      * @param from Address that sent the token.
      * @param value Amount of the token received.
-     * @param tokenContract The ERC223 contract that manages the token.
+     * @param tokenContract The MixTokenInterface contract that manages the token.
      */
     event ReceiveToken(address from, uint value, address tokenContract);
 
