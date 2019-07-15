@@ -26,10 +26,9 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
 
     /**
      * @dev A call has failed.
-     * @param i Call index.
      * @param returnData Data returned from the call.
      */
-    event CallFailed(uint i, bytes returnData);
+    event CallFailed(bytes returnData);
 
     /**
      * @dev MIX has been received.
@@ -95,9 +94,8 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
 
     /**
      * @dev Log call failure with return data.
-     * @param i Call index.
      */
-    function logCallFailure(uint i) internal {
+    function logCallFailure() internal {
         uint size;
         assembly {
             size := returndatasize
@@ -106,7 +104,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
         assembly {
             returndatacopy(add(returnData, 0x20), 0, size)
         }
-        emit CallFailed(i, returnData);
+        emit CallFailed(returnData);
     }
 
     /**
@@ -121,7 +119,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
         }
         // Check if it succeeded.
         if (!success) {
-            logCallFailure(0);
+            logCallFailure();
         }
     }
 
@@ -139,7 +137,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
         }
         // Check if it succeeded.
         if (!success) {
-            logCallFailure(0);
+            logCallFailure();
         }
     }
 
