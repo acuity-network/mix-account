@@ -18,14 +18,14 @@ interface MixAccountInterface /* is MixTokenReceiverInterface, ERC1155TokenRecei
      * @dev Send MIX to an address.
      * @param to Address to receive the MIX.
      */
-    function sendMix(address to) external payable;
+    function sendMix(address to) external payable returns (bool success);
 
     /**
      * @dev Perform a call.
      * @param to Address to receive the call.
      * @param data The calldata.
      */
-    function sendData(address to, bytes calldata data) external payable;
+    function sendData(address to, bytes calldata data) external payable returns (bool success);
 
     /**
      * @dev Send all MIX to the controller.

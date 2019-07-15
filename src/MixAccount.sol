@@ -25,6 +25,13 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
     event SetController(address controller);
 
     /**
+     * @dev A call has failed.
+     * @param i Call index.
+     * @param returnData Data returned from the call.
+     */
+    event CallFailed(uint i, bytes returnData);
+
+    /**
      * @dev MIX has been received.
      * @param from Address that sent the MIX.
      * @param value Amount of MIX received.
@@ -87,17 +94,34 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
     }
 
     /**
+     * @dev Log call failure with return data.
+     * @param i Call index.
+     */
+    function logCallFailure(uint i) internal {
+        uint size;
+        assembly {
+            size := returndatasize
+        }
+        bytes memory returnData = new bytes(size);
+        assembly {
+            returndatacopy(add(returnData, 0x20), 0, size)
+        }
+        emit CallFailed(i, returnData);
+    }
+
+    /**
      * @dev Send MIX to an address.
      * @param to Address to receive the MIX.
      */
-    function sendMix(address to) external payable hasValue isController {
+    function sendMix(address to) external payable hasValue isController returns (bool success) {
         // Send the MIX.
         uint value = msg.value;
         assembly {
-            let success := call(not(0), to, value, 0, 0, 0, 0)
-            if iszero(success) {
-                revert(0, 0)
-            }
+            success := call(not(0), to, value, 0, 0, 0, 0)
+        }
+        // Check if it succeeded.
+        if (!success) {
+            logCallFailure(0);
         }
     }
 
@@ -106,15 +130,16 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
      * @param to Address to receive the call.
      * @param data The calldata.
      */
-    function sendData(address to, bytes calldata data) external payable isController {
+    function sendData(address to, bytes calldata data) external payable isController returns (bool success) {
         // Send the data.
         uint value = msg.value;
         bytes memory _data = data;
         assembly {
-            let success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
-            if iszero(success) {
-                revert(0, 0)
-            }
+            success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
+        }
+        // Check if it succeeded.
+        if (!success) {
+            logCallFailure(0);
         }
     }
 
