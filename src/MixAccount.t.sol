@@ -61,7 +61,7 @@ contract MixAccountTest is DSTest {
 contract Mock {
 
     function() external payable {
-        revert("error");
+        revert("fallback error");
     }
 
     function returnNoError() public payable {
