@@ -48,6 +48,13 @@ contract MixAccountTest is DSTest {
         assertEq(address(mock).balance, 0);
     }
 
+    function testSupportsInterface() public {
+        assertTrue(!account.supportsInterface(0x00000000));
+        assertTrue(!account.supportsInterface(0xffffffff));
+        assertTrue(account.supportsInterface(0x01ffc9a7));
+        assertTrue(account.supportsInterface(0x4e2312e0));
+    }
+
 }
 
 contract Mock {
