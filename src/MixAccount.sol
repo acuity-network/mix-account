@@ -186,7 +186,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
             // Log the event.
             emit ReceiveMixToken(from, msg.sender, value);
         }
-        return 0x3c8c71b0;
+        return hex"3c8c71b0";
     }
 
     /**
@@ -203,7 +203,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
             // Log the event.
             emit ReceiveERC1155Token(from, msg.sender, id, value, operator);
         }
-        return 0xf23a6e61;
+        return hex"f23a6e61";
     }
 
     /**
@@ -223,7 +223,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
                 emit ReceiveERC1155Token(from, msg.sender, ids[i], values[i], operator);
             }
         }
-        return 0xbc197c81;
+        return hex"bc197c81";
     }
 
     /**
