@@ -78,7 +78,8 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
         // Store the controller.
         controller = msg.sender;
         // Log the event.
-        emit SetController(controller);
+        // Don't pass controller state variable or deployment will revert.
+        emit SetController(msg.sender);
     }
 
     /**
