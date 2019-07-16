@@ -1,3 +1,0 @@
-export ETH_KEYSTORE=~/.ethereum/mix/keystore/
-export ETH_GAS=500000
-export ETH_GAS_PRICE=1000000000
