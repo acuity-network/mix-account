@@ -20,14 +20,6 @@ contract MixAccountTest is DSTest {
         mock = new Mock();
     }
 
-    function testControlSendMixNoValue() public {
-        account.sendMix.value(50)(address(0x1234));
-    }
-
-    function testFailSendMixNoValue() public {
-        account.sendMix.value(0)(address(0x1234));
-    }
-
     function testSendMixSuccess() public {
         assertEq(address(0x1234).balance, 0);
         bool result = account.sendMix.value(50)(address(0x1234));

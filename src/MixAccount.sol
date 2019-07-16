@@ -111,7 +111,7 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
      * @dev Send MIX to an address.
      * @param to Address to receive the MIX.
      */
-    function sendMix(address to) external payable hasValue isController returns (bool success) {
+    function sendMix(address to) external payable isController returns (bool success) {
         // Send the MIX.
         uint value = msg.value;
         assembly {
