@@ -5,122 +5,117 @@ import "ds-test/test.sol";
 import "./MixAccount.sol";
 
 
-/**
- * @title MixAccountTest
- * @author Jonathan Brown <jbrown@mix-blockchain.org>
- * @dev Testing contract for MixAccount.
- */
 contract MixAccountTest is DSTest {
 
-    MixAccount account;
-    MixAccountProxy accountProxy;
+    MixAccount mixAccount;
+    MixAccountProxy mixAccountProxy;
     Mock mock;
 
     function() external payable {}
 
     function setUp() public {
-        account = new MixAccount();
-        accountProxy = new MixAccountProxy(account);
+        mixAccount = new MixAccount();
+        mixAccountProxy = new MixAccountProxy(mixAccount);
         mock = new Mock();
     }
 
     function testFailSetControllerNotController() public {
-        accountProxy.setController(address(0x1234));
+        mixAccountProxy.setController(address(0x1234));
     }
 
     function testSetController() public {
-        account.setController(address(accountProxy));
-        accountProxy.setController(address(0x1234));
+        mixAccount.setController(address(mixAccountProxy));
+        mixAccountProxy.setController(address(0x1234));
     }
 
     function testSendMixSuccess() public {
         assertEq(address(0x1234).balance, 0);
-        bool result = account.sendMix.value(50)(address(0x1234));
+        bool result = mixAccount.sendMix.value(50)(address(0x1234));
         assertTrue(result);
         assertEq(address(0x1234).balance, 50);
     }
 
     function testSendMixFail() public {
         assertEq(address(mock).balance, 0);
-        bool result = account.sendMix.value(50)(address(mock));
+        bool result = mixAccount.sendMix.value(50)(address(mock));
         assertTrue(!result);
         assertEq(address(mock).balance, 0);
     }
 
     function testSendDataSuccess() public {
         assertEq(address(mock).balance, 0);
-        bool result = account.sendData.value(50)(address(mock), hex"cf7d0b9f");
+        bool result = mixAccount.sendData.value(50)(address(mock), hex"cf7d0b9f");
         assertTrue(result);
         assertEq(address(mock).balance, 50);
     }
 
     function testSendDataFail() public {
         assertEq(address(mock).balance, 0);
-        bool result = account.sendData.value(50)(address(mock), hex"dad03cb0");
+        bool result = mixAccount.sendData.value(50)(address(mock), hex"dad03cb0");
         assertTrue(!result);
         assertEq(address(mock).balance, 0);
     }
 
     function testControlWithdrawNotController() public {
-        account.withdraw();
+        mixAccount.withdraw();
     }
 
     function testFailWithdrawNotController() public {
-        accountProxy.withdraw();
+        mixAccountProxy.withdraw();
     }
 
     function testWithdraw() public {
         uint startMix = address(this).balance;
-        assertEq(address(account).balance, 0);
-        address(account).transfer(50);
-        assertEq(address(account).balance, 50);
+        assertEq(address(mixAccount).balance, 0);
+        address(mixAccount).transfer(50);
+        assertEq(address(mixAccount).balance, 50);
         assertEq(address(this).balance, startMix - 50);
-        account.withdraw();
-        assertEq(address(account).balance, 0);
+        mixAccount.withdraw();
+        assertEq(address(mixAccount).balance, 0);
         assertEq(address(this).balance, startMix);
     }
 
     function testControlDestroyNotController() public {
-        account.destroy();
+        mixAccount.destroy();
     }
 
     function testFailDestroyNotController() public {
-        accountProxy.destroy();
+        mixAccountProxy.destroy();
     }
 
     function testDestroy() public {
         uint startMix = address(this).balance;
-        assertEq(address(account).balance, 0);
-        address(account).transfer(50);
-        assertEq(address(account).balance, 50);
+        assertEq(address(mixAccount).balance, 0);
+        address(mixAccount).transfer(50);
+        assertEq(address(mixAccount).balance, 50);
         assertEq(address(this).balance, startMix - 50);
-        account.destroy();
-        assertEq(address(account).balance, 0);
+        mixAccount.destroy();
+        assertEq(address(mixAccount).balance, 0);
         assertEq(address(this).balance, startMix);
     }
 
     function testCallback() public {
-        address(account).transfer(50);
+        address(mixAccount).transfer(50);
     }
 
     function testOnMixTokenReceived() public {
-        assertEq(bytes32(accountProxy.onMixTokenReceived(address(0), 0, hex"")), bytes32(hex"3c8c71b0"));
+        assertEq(bytes32(mixAccountProxy.onMixTokenReceived(address(0), 0, hex"")), bytes32(hex"3c8c71b0"));
     }
 
     function testOnERC1155Received() public {
-        assertEq(bytes32(accountProxy.onERC1155Received(address(0), address(0), 0, 0, hex"")), bytes32(hex"f23a6e61"));
+        assertEq(bytes32(mixAccountProxy.onERC1155Received(address(0), address(0), 0, 0, hex"")), bytes32(hex"f23a6e61"));
     }
 
     function testOnERC1155BatchReceived() public {
         uint[] memory empty = new uint[](0);
-        assertEq(bytes32(accountProxy.onERC1155BatchReceived(address(0), address(0), empty, empty, hex"")), bytes32(hex"bc197c81"));
+        assertEq(bytes32(mixAccountProxy.onERC1155BatchReceived(address(0), address(0), empty, empty, hex"")), bytes32(hex"bc197c81"));
     }
 
     function testSupportsInterface() public {
-        assertTrue(!account.supportsInterface(0x00000000));
-        assertTrue(!account.supportsInterface(0xffffffff));
-        assertTrue(account.supportsInterface(0x01ffc9a7));
-        assertTrue(account.supportsInterface(0x4e2312e0));
+        assertTrue(!mixAccount.supportsInterface(0x00000000));
+        assertTrue(!mixAccount.supportsInterface(0xffffffff));
+        assertTrue(mixAccount.supportsInterface(0x01ffc9a7));
+        assertTrue(mixAccount.supportsInterface(0x4e2312e0));
     }
 
 }

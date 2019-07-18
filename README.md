@@ -1,2 +1,2 @@
 # MIX Account
-MIX account smart contract.
+Contract for each MIX account.

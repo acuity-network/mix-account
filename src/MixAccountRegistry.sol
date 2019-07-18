@@ -6,7 +6,7 @@ import "./MixAccount.sol";
 /**
  * @title MixAccountRegistry
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
- * @dev Allows controllers to store a record of which account they control.
+ * @dev Enables controllers to store a record of which account they control.
  */
 contract MixAccountRegistry {
 
@@ -27,10 +27,7 @@ contract MixAccountRegistry {
         controllerAccount[msg.sender] = account;
     }
 
-    function get(address controller) external view
-        accountExists(controller)
-        returns (MixAccount)
-    {
+    function get(address controller) external view accountExists(controller) returns (MixAccount) {
         return controllerAccount[controller];
     }
 
