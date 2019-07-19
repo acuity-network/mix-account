@@ -169,14 +169,14 @@ contract MixAccountProxy is MixAccountInterface, MixTokenReceiverInterface, ERC1
 contract Mock {
 
     function() external payable {
-        revert("fallback error");
+        revert ("fallback error");
     }
 
     function returnNoError() public payable {
     }
 
     function returnError() public payable {
-        revert("error");
+        revert ("error");
     }
 
 }
