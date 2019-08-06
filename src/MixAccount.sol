@@ -1,6 +1,5 @@
 pragma solidity ^0.5.10;
 
-import "mix-token/MixToken.sol";
 import "./ERC165.sol";
 import "./MixAccountInterface.sol";
 import "./ERC1155TokenReceiver.sol";
@@ -11,7 +10,7 @@ import "./ERC1155TokenReceiver.sol";
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Contract for each MIX account.
  */
-contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, ERC1155TokenReceiver {
+contract MixAccount is ERC165, MixAccountInterface, ERC1155TokenReceiver {
 
     /**
      * @dev Controller of the account.
@@ -173,21 +172,6 @@ contract MixAccount is ERC165, MixAccountInterface, MixTokenReceiverInterface, E
             // Log the event.
             emit ReceiveMix(msg.sender, msg.value);
         }
-    }
-
-    /**
-     * @dev A quantity of a Mix Token has been sent to this account.
-     * @param from The address which previously owned the token.
-     * @param value The amount of tokens being transferred.
-     * return `bytes4(keccak256("onMixTokenReceived(address,uint256,bytes)"))`
-     */
-    function onMixTokenReceived(address from, uint value, bytes calldata) external returns (bytes4) {
-        // Check call didn't come from the controller.
-        if (from != controller) {
-            // Log the event.
-            emit ReceiveMixToken(from, msg.sender, value);
-        }
-        return hex"3c8c71b0";
     }
 
     /**

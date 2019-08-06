@@ -6,7 +6,7 @@ pragma solidity ^0.5.10;
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Interface for implementing a MIX account contract.
  */
-interface MixAccountInterface /* is MixTokenReceiverInterface, ERC1155TokenReceiver */ {
+interface MixAccountInterface /* is ERC1155TokenReceiver */ {
 
     /**
      * @dev Set which address controls this account.

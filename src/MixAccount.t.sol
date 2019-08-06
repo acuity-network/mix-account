@@ -98,10 +98,6 @@ contract MixAccountTest is DSTest {
         address(mixAccount).transfer(50);
     }
 
-    function testOnMixTokenReceived() public {
-        assertEq(bytes32(mixAccountProxy.onMixTokenReceived(address(0), 0, hex"")), bytes32(hex"3c8c71b0"));
-    }
-
     function testOnERC1155Received() public {
         assertEq(bytes32(mixAccountProxy.onERC1155Received(address(0), address(0), 0, 0, hex"")), bytes32(hex"f23a6e61"));
     }
@@ -120,7 +116,7 @@ contract MixAccountTest is DSTest {
 
 }
 
-contract MixAccountProxy is MixAccountInterface, MixTokenReceiverInterface, ERC1155TokenReceiver {
+contract MixAccountProxy is MixAccountInterface, ERC1155TokenReceiver {
 
     MixAccount mixAccount;
 
@@ -152,10 +148,6 @@ contract MixAccountProxy is MixAccountInterface, MixTokenReceiverInterface, ERC1
     }
 
     function() external payable {}
-
-    function onMixTokenReceived(address from, uint value, bytes calldata data) external returns (bytes4) {
-        return mixAccount.onMixTokenReceived(from, value, data);
-    }
 
     function onERC1155Received(address operator, address from, uint id, uint value, bytes calldata data) external returns (bytes4) {
         return mixAccount.onERC1155Received(operator, from, id, value, data);
