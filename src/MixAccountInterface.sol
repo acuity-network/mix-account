@@ -9,6 +9,25 @@ pragma solidity ^0.5.10;
 interface MixAccountInterface /* is ERC1155TokenReceiver */ {
 
     /**
+     * @dev The controller has been set.
+     * @param controller The address that controls this account.
+     */
+    event SetController(address controller);
+
+    /**
+     * @dev A call has failed.
+     * @param returnData Data returned from the call.
+     */
+    event CallFailed(bytes returnData);
+
+    /**
+     * @dev MIX has been received.
+     * @param from Address that sent the MIX.
+     * @param value Amount of MIX received.
+     */
+    event ReceiveMix(address indexed from, uint value);
+
+    /**
      * @dev Set which address controls this account.
      * @param newController New controller of the account.
      */

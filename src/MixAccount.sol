@@ -18,33 +18,6 @@ contract MixAccount is ERC165, MixAccountInterface, ERC1155TokenReceiver {
     address payable controller;
 
     /**
-     * @dev The controller has been set.
-     * @param controller The address that controls this account.
-     */
-    event SetController(address controller);
-
-    /**
-     * @dev A call has failed.
-     * @param returnData Data returned from the call.
-     */
-    event CallFailed(bytes returnData);
-
-    /**
-     * @dev MIX has been received.
-     * @param from Address that sent the MIX.
-     * @param value Amount of MIX received.
-     */
-    event ReceiveMix(address indexed from, uint value);
-
-    /**
-     * @dev A token has been received.
-     * @param from Address that sent the token.
-     * @param tokenContract The MixTokenInterface contract that manages the token.
-     * @param value Amount of the token received.
-     */
-    event ReceiveMixToken(address indexed from, address indexed tokenContract, uint value);
-
-    /**
      * @dev An ERC1155 token has been received.
      * @param from The address which previously owned the token.
      * @param tokenContract The ERC1155 contract that manages the token.
