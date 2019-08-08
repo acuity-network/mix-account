@@ -18,16 +18,6 @@ contract MixAccount is ERC165, MixAccountInterface, ERC1155TokenReceiver {
     address payable controller;
 
     /**
-     * @dev An ERC1155 token has been received.
-     * @param from The address which previously owned the token.
-     * @param tokenContract The ERC1155 contract that manages the token.
-     * @param id The ID of the token being transferred.
-     * @param value Amount of the token received.
-     * @param operator The address which initiated the transfer.
-     */
-    event ReceiveERC1155Token(address indexed from, address indexed tokenContract, uint indexed id, uint value, address operator);
-
-    /**
      * @dev Revert if the controller of the account is not the sender.
      */
     modifier isController() {
