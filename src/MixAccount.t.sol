@@ -28,32 +28,40 @@ contract MixAccountTest is DSTest {
         mixAccountProxy.setController(address(0x1234));
     }
 
-    function testSendMixSuccess() public {
-        assertEq(address(0x1234).balance, 0);
-        bool result = mixAccount.sendMix.value(50)(address(0x1234));
-        assertTrue(result);
-        assertEq(address(0x1234).balance, 50);
-    }
-
-    function testSendMixFail() public {
+    function testSendCallSuccess() public {
+        uint startBalance = address(this).balance;
         assertEq(address(mock).balance, 0);
-        bool result = mixAccount.sendMix.value(50)(address(mock));
-        assertTrue(!result);
-        assertEq(address(mock).balance, 0);
-    }
-
-    function testSendDataSuccess() public {
-        assertEq(address(mock).balance, 0);
-        bool result = mixAccount.sendData.value(50)(address(mock), hex"cf7d0b9f");
-        assertTrue(result);
+        (bool success, bytes memory returnData) = mixAccount.sendCall.value(50)(address(mock), hex"cf7d0b9f");
+        assertTrue(success);
+        assertEq0(returnData, hex"000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000077375636365737300000000000000000000000000000000000000000000000000");
         assertEq(address(mock).balance, 50);
+        assertEq(address(this).balance, startBalance - 50);
     }
 
-    function testSendDataFail() public {
+    function testSendCallFail() public {
+        uint startBalance = address(this).balance;
         assertEq(address(mock).balance, 0);
-        bool result = mixAccount.sendData.value(50)(address(mock), hex"dad03cb0");
-        assertTrue(!result);
+        (bool success, bytes memory returnData) = mixAccount.sendCall.value(50)(address(mock), hex"dad03cb0");
+        assertTrue(!success);
+        assertEq0(returnData, hex"08c379a0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000056572726f72000000000000000000000000000000000000000000000000000000");
         assertEq(address(mock).balance, 0);
+        assertEq(address(this).balance, startBalance);
+    }
+
+    function testSendCallNoReturnSuccess() public {
+        uint startBalance = address(this).balance;
+        assertEq(address(mock).balance, 0);
+        mixAccount.sendCallNoReturn.value(50)(address(mock), hex"cf7d0b9f");
+        assertEq(address(mock).balance, 50);
+        assertEq(address(this).balance, startBalance - 50);
+    }
+
+    function testSendCallNoReturnFail() public {
+        uint startBalance = address(this).balance;
+        assertEq(address(mock).balance, 0);
+        mixAccount.sendCallNoReturn.value(50)(address(mock), hex"dad03cb0");
+        assertEq(address(mock).balance, 0);
+        assertEq(address(this).balance, startBalance);
     }
 
     function testControlWithdrawNotController() public {
@@ -131,12 +139,12 @@ contract MixAccountProxy is MixAccountInterface, ERC1155TokenReceiver {
         mixAccount.setController(newController);
     }
 
-    function sendMix(address to) external payable returns (bool success) {
-        success = mixAccount.sendMix(to);
+    function sendCall(address to, bytes calldata data) external payable returns (bool success, bytes memory returnData) {
+        (success, returnData) = mixAccount.sendCall(to, data);
     }
 
-    function sendData(address to, bytes calldata data) external payable returns (bool success) {
-        success = mixAccount.sendData(to, data);
+    function sendCallNoReturn(address to, bytes calldata data) external payable {
+        mixAccount.sendCallNoReturn(to, data);
     }
 
     function withdraw() external {
@@ -164,7 +172,8 @@ contract Mock {
         revert ("fallback error");
     }
 
-    function returnNoError() public payable {
+    function returnNoError() public payable returns (string memory message) {
+        message = "success";
     }
 
     function returnError() public payable {

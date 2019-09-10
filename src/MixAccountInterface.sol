@@ -44,17 +44,20 @@ interface MixAccountInterface /* is ERC1155TokenReceiver */ {
     function setController(address payable newController) external;
 
     /**
-     * @dev Send MIX to an address.
-     * @param to Address to receive the MIX.
+     * @dev Send a call, returning the result.
+     * @param to Address to receive the call.
+     * @param data The calldata.
+     * @return success True if the call did not revert.
+     * @return returnData Data returned from the call.
      */
-    function sendMix(address to) external payable returns (bool success);
+    function sendCall(address to, bytes calldata data) external payable returns (bool success, bytes memory returnData);
 
     /**
-     * @dev Perform a call.
+     * @dev Send a call without returning the result.
      * @param to Address to receive the call.
      * @param data The calldata.
      */
-    function sendData(address to, bytes calldata data) external payable returns (bool success);
+    function sendCallNoReturn(address to, bytes calldata data) external payable;
 
     /**
      * @dev Send all MIX to the controller.

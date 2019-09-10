@@ -56,51 +56,67 @@ contract MixAccount is ERC165, MixAccountInterface, ERC1155TokenReceiver {
     }
 
     /**
-     * @dev Log call failure with return data.
-     */
-    function logCallFailure() internal {
-        uint size;
-        assembly {
-            size := returndatasize
-        }
-        bytes memory returnData = new bytes(size);
-        assembly {
-            returndatacopy(add(returnData, 0x20), 0, size)
-        }
-        emit CallFailed(returnData);
-    }
-
-    /**
-     * @dev Send MIX to an address.
-     * @param to Address to receive the MIX.
-     */
-    function sendMix(address to) external payable isController returns (bool success) {
-        // Send the MIX.
-        uint value = msg.value;
-        assembly {
-            success := call(not(0), to, value, 0, 0, 0, 0)
-        }
-        // Check if it succeeded.
-        if (!success) {
-            logCallFailure();
-        }
-    }
-
-    /**
-     * @dev Perform a call.
+     * @dev Send a call, returning the result.
      * @param to Address to receive the call.
      * @param data The calldata.
+     * @return success True if the call did not revert.
+     * @return returnData Data returned from the call.
      */
-    function sendData(address to, bytes calldata data) external payable isController returns (bool success) {
+    function sendCall(address to, bytes calldata data) external payable isController returns (bool success, bytes memory returnData) {
         // Send the data.
         uint value = msg.value;
         bytes memory _data = data;
+        uint returnSize;
+        assembly {
+            success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
+            returnSize := returndatasize
+        }
+        returnData = new bytes(returnSize);
+        assembly {
+            returndatacopy(add(returnData, 0x20), 0, returnSize)
+        }
+        // Check if it succeeded.
+        if (!success) {
+            // Log the error.
+            emit CallFailed(returnData);
+            // Send supplied MIX back to controller.
+            address _sender = msg.sender;
+            assembly {
+                pop(call(not(0), _sender, value, 0, 0, 0, 0))
+            }
+        }
+    }
+
+    /**
+     * @dev Send a call without returning the result.
+     * @param to Address to receive the call.
+     * @param data The calldata.
+     */
+    function sendCallNoReturn(address to, bytes calldata data) external payable isController {
+        // Send the data.
+        uint value = msg.value;
+        bytes memory _data = data;
+        bool success;
         assembly {
             success := call(not(0), to, value, add(_data, 0x20), mload(_data), 0, 0)
         }
         // Check if it succeeded.
         if (!success) {
-            logCallFailure();
+            uint returnSize;
+            assembly {
+                returnSize := returndatasize
+            }
+            bytes memory returnData = new bytes(returnSize);
+            assembly {
+                returndatacopy(add(returnData, 0x20), 0, returnSize)
+            }
+            // Log the error.
+            emit CallFailed(returnData);
+            // Send supplied MIX back to controller.
+            address _sender = msg.sender;
+            assembly {
+                pop(call(not(0), _sender, value, 0, 0, 0, 0))
+            }
         }
     }
 
@@ -109,13 +125,10 @@ contract MixAccount is ERC165, MixAccountInterface, ERC1155TokenReceiver {
      */
     function withdraw() external isController {
         // Transfer the balance to the controller.
-        address _controller = controller;
+        address _sender = msg.sender;
         uint value = address(this).balance;
         assembly {
-            let success := call(not(0), _controller, value, 0, 0, 0, 0)
-            if iszero(success) {
-                revert(0, 0)
-            }
+            pop(call(not(0), _sender, value, 0, 0, 0, 0))
         }
     }
 
