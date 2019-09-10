@@ -21,7 +21,7 @@ contract MixAccount is ERC165, MixAccountInterface, ERC1155TokenReceiver {
      * @dev Revert if the controller of the account is not the sender.
      */
     modifier isController() {
-        require (controller == msg.sender);
+        require (controller == msg.sender, "Not controller.");
         _;
     }
 
