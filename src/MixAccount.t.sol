@@ -118,8 +118,11 @@ contract MixAccountTest is DSTest {
     function testSupportsInterface() public {
         assertTrue(!mixAccount.supportsInterface(0x00000000));
         assertTrue(!mixAccount.supportsInterface(0xffffffff));
-        assertTrue(mixAccount.supportsInterface(0x01ffc9a7));
-        assertTrue(mixAccount.supportsInterface(0x4e2312e0));
+        assertTrue(mixAccount.supportsInterface(0x01ffc9a7));    // EIP165
+        assertTrue(mixAccount.supportsInterface(0x4e2312e0));    // ERC1155TokenReceiver
+
+        MixAccountInterfaceId mixAccountInterfaceId = new MixAccountInterfaceId();
+        assertTrue(mixAccount.supportsInterface(mixAccountInterfaceId.getInterfaceId()));
     }
 
 }

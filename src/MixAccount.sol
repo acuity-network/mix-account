@@ -189,12 +189,13 @@ contract MixAccount is ERC165, MixAccountInterface, ERC1155TokenReceiver {
 
     /**
      * @dev Interface identification is specified in ERC-165.
-     * @param interfaceID The interface identifier, as specified in ERC-165.
+     * @param interfaceId The interface identifier, as specified in ERC-165.
      * @return true if the contract implements interfaceID.
      */
-    function supportsInterface(bytes4 interfaceID) external view returns (bool) {
-        if (interfaceID == 0x01ffc9a7 ||
-            interfaceID == 0x4e2312e0)
+    function supportsInterface(bytes4 interfaceId) external view returns (bool) {
+        if (interfaceId == 0x01ffc9a7 ||    // EIP165
+            interfaceId == 0x527f66d8 ||    // MixAccountInterface
+            interfaceId == 0x4e2312e0)      // ERC1155TokenReceiver
         {
             return true;
         }

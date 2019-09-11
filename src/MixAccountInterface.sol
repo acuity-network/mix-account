@@ -6,7 +6,7 @@ pragma solidity ^0.5.11;
  * @author Jonathan Brown <jbrown@mix-blockchain.org>
  * @dev Interface for implementing a MIX account contract.
  */
-interface MixAccountInterface /* is ERC1155TokenReceiver */ {
+interface MixAccountInterface /* is ERC1155TokenReceiver, ERC165 */ {
 
     /**
      * @dev The controller has been set.
@@ -74,4 +74,15 @@ interface MixAccountInterface /* is ERC1155TokenReceiver */ {
      */
     function() external payable;
 
+}
+
+contract MixAccountInterfaceId {
+    function getInterfaceId() external pure returns (bytes4) {
+        MixAccountInterface i;
+        return i.setController.selector ^
+            i.sendCall.selector ^
+            i.sendCallNoReturn.selector ^
+            i.withdraw.selector ^
+            i.destroy.selector;
+    }
 }
